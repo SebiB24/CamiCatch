@@ -18,7 +18,7 @@ let player = {
 let itemArray = [];
 const itemWidth = 70;
 const itemHeight = 70;
-let baseItemSpeed = 5;
+let baseItemSpeed = 5.5;
 const itemSpeedIncrease = 0.1;
 
 // Visual effects
