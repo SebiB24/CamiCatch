@@ -36,6 +36,8 @@ let itemSpawnTimerId; // Stores the timer ID to prevent crashing
 
 // Input tracking
 let keys = {};
+let touchStartX = 0;
+let playerStartX = 0;
 
 // Image pre-loading
 let loadedGood = [];
@@ -44,7 +46,7 @@ let playerImage = new Image();
 
 function initializeImages() {
     const goodFiles = ["blackcat.png"];
-    const badFiles = ["beer.png", "vodka.png"];
+    const badFiles = ["vodka.png", "beer.png"];
 
     goodFiles.forEach(file => {
         let img = new Image();
@@ -61,7 +63,6 @@ function initializeImages() {
     playerImage.src = "./resources/cami.png";
     player.image = playerImage;
 }
-
 
 window.onload = function () {
     board = document.getElementById("board");
@@ -91,13 +92,30 @@ window.onload = function () {
     // Set up event listeners for input
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
-    document.addEventListener("touchmove", handleTouchMove, {
-        passive: false
-    });
+    
+    // Touch events for mobile
+    board.addEventListener("touchstart", handleTouchStart, { passive: false });
+    board.addEventListener("touchmove", handleTouchMove, { passive: false });
+    
+    // Mobile control buttons
+    document.getElementById("leftBtn").addEventListener("touchstart", () => keys['ArrowLeft'] = true);
+    document.getElementById("leftBtn").addEventListener("touchend", () => keys['ArrowLeft'] = false);
+    document.getElementById("rightBtn").addEventListener("touchstart", () => keys['ArrowRight'] = true);
+    document.getElementById("rightBtn").addEventListener("touchend", () => keys['ArrowRight'] = false);
+    
+    // Restart button
+    document.getElementById("restartBtn").addEventListener("click", restartGame);
+    document.getElementById("restartBtn").addEventListener("touchstart", restartGame);
 
     // Start the game loop and item spawning
     requestAnimationFrame(gameLoop);
     startItemSpawn();
+    
+    // Check if mobile device and adjust UI
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        document.getElementById("mobileControls").style.display = "flex";
+        document.getElementById("instructions").innerHTML = "Tap buttons to move • Catch good items, avoid bad ones!";
+    }
 };
 
 function gameLoop() {
@@ -108,7 +126,10 @@ function gameLoop() {
     drawBackground();
     if (gameOver) {
         drawGameOver();
+        document.getElementById("restartBtn").style.display = "block";
         return;
+    } else {
+        document.getElementById("restartBtn").style.display = "none";
     }
 
     // Update and draw game elements
@@ -279,7 +300,7 @@ function drawGameOver() {
     context.fillText(`Final Score: ${score}`, boardWidth / 2, boardHeight / 2);
 
     context.font = '18px Arial';
-    context.fillText('Press SPACE or ENTER to restart', boardWidth / 2, boardHeight / 2 + 60);
+    context.fillText('Tap RESTART to play again', boardWidth / 2, boardHeight / 2 + 60);
     context.restore();
 }
 
@@ -348,13 +369,20 @@ function handleKeyUp(e) {
     keys[e.code] = false;
 }
 
+function handleTouchStart(e) {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        playerStartX = player.x;
+    }
+}
+
 function handleTouchMove(e) {
     e.preventDefault();
     if (e.touches.length === 1) {
         const touchX = e.touches[0].clientX;
-        const rect = board.getBoundingClientRect();
-        const relativeX = touchX - rect.left;
-        player.x = Math.max(0, Math.min(relativeX - player.width / 2, boardWidth - player.width));
+        const diffX = touchX - touchStartX;
+        player.x = Math.max(0, Math.min(playerStartX + diffX, boardWidth - player.width));
     }
 }
 

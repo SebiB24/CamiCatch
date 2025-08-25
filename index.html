@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cami Catch</title>
-    <link rel="stylesheet", href="camicatch.css">
-    <script src="camicatch.js"></script>
+    <link rel="stylesheet" href="camicatch.css">
 </head>
 <body>
     <div class="particles"></div>
@@ -16,9 +15,12 @@
             Use ◀️ ▶️ arrow keys or A/D to move • Catch good items, avoid bad ones!<br>
             Press SPACE/ENTER to restart • Hold keys for smooth movement
         </div>
+        <div id="mobileControls">
+            <div class="control-btn" id="leftBtn">◀️</div>
+            <div class="control-btn" id="rightBtn">▶️</div>
+        </div>
+        <button id="restartBtn">RESTART GAME</button>
     </div>
+    <script src="camicatch.js"></script>
 </body>
 </html>
-
-
-
