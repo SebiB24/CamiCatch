@@ -31,8 +31,9 @@ let scoreGlow = 0;
 let score = 0;
 let level = 1;
 let gameOver = false;
-let itemSpawnRate = 1200;
-let itemSpawnTimerId; // Stores the timer ID to prevent crashing
+// Increased initial spawn rate from 1200ms to 800ms
+let itemSpawnRate = 800;
+let itemSpawnTimerId;
 
 // Input tracking
 let keys = {};
@@ -45,8 +46,8 @@ let loadedBad = [];
 let playerImage = new Image();
 
 function initializeImages() {
-    const goodFiles = ["blackcat.png"];
-    const badFiles = ["vodka.png", "beer.png"];
+    const goodFiles = ["blackcat.png", "lizard.png", "lotus.png"];
+    const badFiles = ["vodka.png", "beer.png", "spider.png"];
 
     goodFiles.forEach(file => {
         let img = new Image();
@@ -186,7 +187,12 @@ function startItemSpawn() {
     if (gameOver) return;
 
     spawnSingleItem();
-    itemSpawnTimerId = setTimeout(startItemSpawn, itemSpawnRate);
+    
+    // Calculate dynamic spawn rate based on score
+    // Items spawn faster as score increases, with a minimum of 300ms
+    const dynamicSpawnRate = Math.max(300, itemSpawnRate - (score * 5));
+    
+    itemSpawnTimerId = setTimeout(startItemSpawn, dynamicSpawnRate);
 }
 
 function spawnSingleItem() {
@@ -218,13 +224,14 @@ function handleGoodItem(item) {
 
     if (score % 10 === 0) {
         level++;
-        itemSpawnRate = Math.max(400, itemSpawnRate - 100);
+        // Decrease spawn rate more aggressively as levels increase
+        itemSpawnRate = Math.max(300, itemSpawnRate - 150);
     }
 }
 
 function handleBadItem(item) {
     gameOver = true;
-    clearTimeout(itemSpawnTimerId); // FIX: Stop the spawning timer immediately
+    clearTimeout(itemSpawnTimerId);
     createParticles(item.x + item.width / 2, item.y + item.height / 2, '#ff0000', 15);
 }
 
@@ -235,9 +242,9 @@ function restartGame() {
     itemArray = [];
     particles = [];
     player.x = boardWidth / 2 - playerWidth / 2;
-    itemSpawnRate = 1200;
+    itemSpawnRate = 800; // Reset to faster initial spawn rate
     scoreGlow = 0;
-    startItemSpawn(); // Restart the spawning timer
+    startItemSpawn();
 }
 
 function drawBackground() {
