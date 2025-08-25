@@ -18,7 +18,7 @@ let player = {
 let itemArray = [];
 const itemWidth = 70;
 const itemHeight = 70;
-let baseItemSpeed = 3;
+let baseItemSpeed = 5;
 const itemSpeedIncrease = 0.1;
 
 // Visual effects
@@ -97,6 +97,9 @@ window.onload = function () {
     // Touch events for mobile
     board.addEventListener("touchstart", handleTouchStart, { passive: false });
     board.addEventListener("touchmove", handleTouchMove, { passive: false });
+    
+    // Add tap-to-restart listener for mobile
+    board.addEventListener("touchend", handleTapToRestart, { passive: false });
     
     // Mobile control buttons
     document.getElementById("leftBtn").addEventListener("touchstart", () => keys['ArrowLeft'] = true);
@@ -307,7 +310,7 @@ function drawGameOver() {
     context.fillText(`Final Score: ${score}`, boardWidth / 2, boardHeight / 2);
 
     context.font = '18px Arial';
-    context.fillText('Tap RESTART to play again', boardWidth / 2, boardHeight / 2 + 60);
+    context.fillText('Tap anywhere to restart', boardWidth / 2, boardHeight / 2 + 60);
     context.restore();
 }
 
@@ -390,6 +393,14 @@ function handleTouchMove(e) {
         const touchX = e.touches[0].clientX;
         const diffX = touchX - touchStartX;
         player.x = Math.max(0, Math.min(playerStartX + diffX, boardWidth - player.width));
+    }
+}
+
+// NEW FUNCTION: Handle tap to restart on mobile
+function handleTapToRestart(e) {
+    e.preventDefault();
+    if (gameOver) {
+        restartGame();
     }
 }
 
