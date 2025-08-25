@@ -116,7 +116,6 @@ window.onload = function () {
     // Check if mobile device and adjust UI
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         document.getElementById("mobileControls").style.display = "flex";
-        document.getElementById("instructions").innerHTML = "Tap buttons to move • Catch good items, avoid bad ones!";
     }
 };
 
