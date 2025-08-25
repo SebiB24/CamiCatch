@@ -14,7 +14,6 @@ let player = {
     image: null
 };
 
-// Item settings
 let itemArray = [];
 const itemWidth = 70;
 const itemHeight = 70;
@@ -31,7 +30,6 @@ let scoreGlow = 0;
 let score = 0;
 let level = 1;
 let gameOver = false;
-// Increased initial spawn rate from 1200ms to 800ms
 let itemSpawnRate = 800;
 let itemSpawnTimerId;
 
