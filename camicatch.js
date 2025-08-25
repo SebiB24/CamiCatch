@@ -44,7 +44,7 @@ let playerImage = new Image();
 
 function initializeImages() {
     const goodFiles = ["blackcat.png"];
-    const badFiles = ["vodka.png"];
+    const badFiles = ["beer.png", "vodka.png"];
 
     goodFiles.forEach(file => {
         let img = new Image();
